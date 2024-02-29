@@ -24,7 +24,7 @@ d3 = m1*n3;              %diameter gear 3
 d4 = m1*n4;              %diameter gear 4
 
 %% Calculating contact ratio [CR]
-%CR = 
+CR = 
 
 r1 = d1/2;
 r2 = d2/2;
@@ -59,7 +59,7 @@ T3 = T2*i2*efficiency
 
 %Power
 P2 = (T2*P1)/(T1*i1)
-P3 = (T3*P2)/(T2*i2) %Power out
+P3 = (T3*P2)/(T2*i2)
 
 %Speed out
-n_out = n1/itot
+n_out = 
