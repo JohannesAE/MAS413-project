@@ -39,7 +39,7 @@ da4 = d4 + 2*(a34)                      % Spur gear 4
 C1 = (d1+d2)/2;                         % Center distance helical gear ?
 C2 = (d3+d4)/2;                         % center distance spur gear
 
-%% Computations
+%% Computations gear
 
 % Gear ratios
 i1 = n2/n1;
@@ -70,3 +70,20 @@ CR1 = num1/den1
 num2 = sqrt(ra3^2-rb3^2) + sqrt(ra4^2-rb4^2) - C2*sind(alpha)
 den2 = pb2
 CR2 = num2/den2
+
+%% Computations force
+
+% calculating load to rear gears
+Pin = 8000;        
+T_in = (Pin*1.25)/(2*pi*1450);
+T_shaft2 = T_in * (n2/n1);
+T_out = T_in * (i_tot);
+
+% Helical gears n1 and n2
+F_t_12 = (T_in*10^3)/(r1);
+F_r_12 = (F_t_12*tand(alpha))/cosd(beta);
+F_a_12 = F_t_12*tan(beta);
+
+% Spur gears n3 and n4
+F_t_34 = (T_shaft2*10^3 )/ r3;
+F_r_34 = F_t_34 * tand(20);
