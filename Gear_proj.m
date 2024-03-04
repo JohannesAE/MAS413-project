@@ -208,6 +208,19 @@ Fa_bearing5 = 1;
 Fr_bearing6 = 1; 
 Fa_bearing6 = 1; 
 
+% If Fa/FR =< e, P_bearing = Fr, 
+% If Fa/Fr > e, P_bearing = X*Fr_bearing + Y*Fa_bearing
+Fa1_Fr1 = Fa_bearing1/Fr_bearing1;
+Fa2_Fr2 = Fa_bearing2/Fr_bearing2;
+Fa3_Fr3 = Fa_bearing3/Fr_bearing3;
+Fa4_Fr4 = Fa_bearing4/Fr_bearing4;
+Fa5_Fr5 = Fa_bearing5/Fr_bearing5;
+Fa6_Fr6 = Fa_bearing6/Fr_bearing6;
+
+% Eventuelt lage en if statement her, ift kravet beskrevet over
+
+% 
+
 % Life requirements
 L5_1 = (L10h*60*nin)/10^6;             % Bearing 1/2
 L5_2 = (L10h*60*nMiddle)/10^6;         % Bearing 3/4
