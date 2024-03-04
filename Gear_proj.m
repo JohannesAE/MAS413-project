@@ -16,6 +16,16 @@ a12 = m1;               % addendum top height
 a34 = m2;               % addendum top height
 b1 = m1*1.25;           % dedendum
 
+%Shaft
+ds1 = 25;%mm diameter shafts
+
+%Tolerance params 
+L_gear = 20;%mm width of gear sleave
+rn = 25; %Nominal/common radius of fitings
+ro = 40; %Outer diameter hub
+E = 215;% Mpa youngsmodulus plain carbon steel
+gamma = 0.3; %possions ratio for steel
+
 %% Size calculations
 
 % Calculating pitch diameter max 500mm
@@ -35,6 +45,12 @@ da1 = d1 + 2*(a12);                     % Helical 1 ?
 da2 = d2 + 2*(a12);                     % Helical 2 ?
 da3 = d3 + 2*(a34)                      % Spur gear 3
 da4 = d4 + 2*(a34)                      % Spur gear 4
+
+% Calculating radius
+r1 = d1/2;
+r2 = d2/2;
+r3 = d3/2;
+r4 = d4/3;
 
 C1 = (d1+d2)/2;                         % Center distance helical gear ?
 C2 = (d3+d4)/2;                         % center distance spur gear
@@ -72,7 +88,6 @@ den2 = pb2
 CR2 = num2/den2
 
 %% Computations force
-
 % calculating load to rear gears
 Pin = 8000;        
 T_in = (Pin*1.25)/(2*pi*1450);
@@ -87,3 +102,29 @@ F_a_12 = F_t_12*tan(beta);
 % Spur gears n3 and n4
 F_t_34 = (T_shaft2*10^3 )/ r3;
 F_r_34 = F_t_34 * tand(20);
+
+%% Press fit calculations
+
+%Press fit force
+% my_d = 0.90; %Dynamic friction coeff. verdier hentet fra power point
+% my_s = 0.10; %Static friction coeff
+% p = 0; %Surface pressure
+% d = 0; %Common diameter
+% 
+% F = my_d*p*d*L_gear*pi; %Press force
+% 
+% T_fit = my_s*p*pi*d*d/2*L_gear; %Torque transmitted from hub to shaft.
+% 
+% p_min1 = T_in/(my_s*pi*d*d/2*L_gear); %calculating min surface pressure
+% 
+% p_min2 = T_shaft2/(my_s*pi*d*d/2*L_gear);
+% 
+% p_min3 = T_out / (my_s*pi*d*d/2*L_gear);
+
+%tolerance
+%Choosing a tolerance grade H7, h7 and IT7 as these tolerances give a snug fit.
+%Later calculations will show if it is satisfactory in transmitting torque
+%with shaft diameter 25mm this gives us from table provided in mas412
+%25mm+0.025mm upper limit and lower limit 25mm+0.00mm
+%and it grade gives a tolerance of 
+
