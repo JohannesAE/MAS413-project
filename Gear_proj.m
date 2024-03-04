@@ -42,13 +42,40 @@ sigma_y = 355; %Mpa st355 yield strength
 nMiddle = nin/(n2/n1);
 
 %% Parameteres bearings
-X0 = 1;                     % Radial Factor
-Y0 = 1;                     % Axial Factor
-X = 1;                      % Dynamic radial Factor
-Y = 1;                      % Dynamic Axial Factor
-C = 1;                      % Dynamic load ratio[N]
-p = 3;                      % Exponent depending on the type of bearing ball=3, roller = 10/3
+
+askf = 0.62;                % This number corresponds to 95% reliability
+
+X1 = 1;                      % Dynamic radial Factor (SKF)
+X2 = 1;
+X3 = 1;
+X4 = 1;
+X5 = 1;
+X6 = 1;
+
+Y1 = 1;                      % Dynamic Axial Factor(SKF)
+Y2 = 1; 
+Y3 = 1; 
+Y4 = 1;
+Y5 = 1;
+Y6 = 1;
+
+%Speed for the following bearings
+n_bearing12 = nin;          % [rpm]
+n_bearing34 = nMiddle;      % [rpm]
+n_bearing45 = nout;         % [rpm]
+
+pR = 10/3;                  % Exponent depending on the type of bearing ball=3, roller = 10/3
+pB = 3;                     % Exponent bearing
+
 L10h = oHours*days*year ;   % Operating hours 
+
+% Bearings
+Bearing1 = 1;               % Ball bearing 
+Bearing2 = 2;               % Ball bearing       
+Bearing3 = 3;               % Ball bearing
+Bearing4 = 4;               % Ball bearing 
+Bearing5 = 5;               % Radial load, roller bearing, cap.14.7.3
+Bearing6 = 6;               % Radial load, roller bearing
 
 %% Parameteres shaft
 d_shaft = 0.02;         % Diameter of the shaft
@@ -117,7 +144,7 @@ CR2 = num2/den2
 %% force Computations 
 
 % calculating load to rear gears       
-T_in = (Pin*ncoef)/(2*pi*1450);
+T_in = (Pin*ncoef*60)/(2*pi*1450);
 T_shaft2 = T_in * (n2/n1);
 T_out = T_in * (i_tot);
 
@@ -239,29 +266,63 @@ sf3_t = sigma_y/sigma_th3
 % Select the correct bearing type based on the forces acting and the direction of these
 % Choose the right bearing size based on the size of the loads and dimensions, e.g. on the shafts
 
-% Selection of bearing type
-    % Foreløpig: Tapered roller bearings
-    %            Cylnindrical: Radial force dominent, and high
-    %            Deep grove: radial, moderate axial, high speed, low noise
+% Choosen Deep grove for 1-4, and roller bearing 5/6
 
-% Calculating static bearing load rpm < 10
-Po = X0*Fr_bearing + Y0*Fa_bearing ;     % Static bearing load
-So = C0/Po;                              % S0 = 0,4 (low) S0 = 4 (high)
+% Forces to the bearings: 
+Fr_bearing1 = 1144.42; 
+Fa_bearing1 = 392.01; 
+Fr_bearing2 = 429.97;
+Fa_bearing2 = 0;
+Fr_bearing3 = 1807.54; 
+Fa_bearing3 = 392.01;
+Fr_bearing4 = 5097.29; 
+Fa_bearing4 = 0; 
+Fr_bearing5 = 1866.27; 
+Fa_bearing5 = 0; 
+Fr_bearing6 = 5598.80; 
+Fa_bearing6 = 0; 
+
+% If Fa/FR =< e, P_bearing = Fr, 
+% If Fa/Fr > e, P_bearing = X*Fr_bearing + Y*Fa_bearing
+Fa1_Fr1 = Fa_bearing1/Fr_bearing1;
+Fa2_Fr2 = Fa_bearing2/Fr_bearing2;
+Fa3_Fr3 = Fa_bearing3/Fr_bearing3;
+Fa4_Fr4 = Fa_bearing4/Fr_bearing4;
+Fa5_Fr5 = Fa_bearing5/Fr_bearing5;
+Fa6_Fr6 = Fa_bearing6/Fr_bearing6;
+
+% Eventuelt lage en if statement her, ift kravet beskrevet over
+
+% 
+
+% Life requirements
+L5_1 = (L10h*60*nin)/10^6;             % Bearing 1/2
+L5_2 = (L10h*60*nMiddle)/10^6;         % Bearing 3/4
+L5_3 = (L10h*60*nout)/10^6;            % Bearing 5/6 
+
+% Compensating for realibility
+L10_1 = L5_1/(askf);
+L10_2 = L5_2/(askf);
+L10_3 = L5_3/(askf);
 
 % Calculating dynamix bearing load
-P_bearing1 = X*Fr_bearing + Y*Fa_bearing;
-P_bearing2 = 0;
-P_bearing3 = 0;
+P_bearing1 = X1*Fr_bearing1 + Y1*Fa_bearing1;
+P_bearing2 = X2*Fr_bearing2 + Y2*Fa_bearing2;
+P_bearing3 = X3*Fr_bearing3 + Y3*Fa_bearing3;
+P_bearing4 = X4*Fr_bearing4 + Y4*Fa_bearing4;
+P_bearing5 = X5*Fr_bearing5 + Y5*Fa_bearing5;
+P_bearing6 = X6*Fr_bearing6 + Y6*Fa_bearing6;
 
-% Lifetime fo a bearing [24mnd FV]
-L10_1 = (L10h*60*nin)/10^6;             % Bearing 1/2
-L10_2 = (L10h*60*nMiddle)/10^6          % Bearing 3/4
-L10_3 = (L10h*60*nout)/10^6;            % Bearing 5/6                        
-C1_bearing = P_bearing1*L10_1^(1/3);
-C2_bearing = P_bearing2*L10^(1/3);
-C3_bearing = P_bearing3*L10^(1/3);
+% Calculate bearing life
+Creg1 = P_bearing1*(L10_1)^(1/pB);       % Bearing 1
+Creg2 = P_bearing2*(L10_1)^(1/pB);       % Bearing 2
+Creg3 = P_bearing3*(L10_2)^(1/pB);       % Bearing 3
+Creg4 = P_bearing4*(L10_2)^(1/pB);       % Bearing 4
+Creg5 = P_bearing5*(L10_3)^(1/pR);       % Bearing 5
+Creg6 = P_bearing6*(L10_3)^(1/pR);       % Bearing 6
 
-
+% Now use the skf to find e bearing that satifies Creg
+            
 %%
 % Dimensjon shaft
 % Hvor skal vi ta opp kreftene
