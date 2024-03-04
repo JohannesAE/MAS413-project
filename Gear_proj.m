@@ -143,7 +143,7 @@ CR2 = num2/den2
 %% force Computations 
 
 % calculating load to rear gears       
-T_in = (Pin*ncoef)/(2*pi*1450);
+T_in = (Pin*ncoef*60)/(2*pi*1450);
 T_shaft2 = T_in * (n2/n1);
 T_out = T_in * (i_tot);
 
@@ -195,18 +195,18 @@ F_r_34 = F_t_34 * tand(alpha)
 % Choosen Deep grove for 1-4, and roller bearing 5/6
 
 % Forces to the bearings: 
-Fr_bearing1 = 1; 
-Fa_bearing1 = 1; 
-Fr_bearing2 = 1;
-Fa_bearing2 = 1; 
-Fr_bearing3 = 1; 
-Fa_bearing3 = 1;
-Fr_bearing4 = 1; 
-Fa_bearing4 = 1; 
-Fr_bearing5 = 1; 
-Fa_bearing5 = 1; 
-Fr_bearing6 = 1; 
-Fa_bearing6 = 1; 
+Fr_bearing1 = 1144.42; 
+Fa_bearing1 = 392.01; 
+Fr_bearing2 = 429.97;
+Fa_bearing2 = 0;
+Fr_bearing3 = 1807.54; 
+Fa_bearing3 = 392.01;
+Fr_bearing4 = 5097.29; 
+Fa_bearing4 = 0; 
+Fr_bearing5 = 1866.27; 
+Fa_bearing5 = 0; 
+Fr_bearing6 = 5598.80; 
+Fa_bearing6 = 0; 
 
 % If Fa/FR =< e, P_bearing = Fr, 
 % If Fa/Fr > e, P_bearing = X*Fr_bearing + Y*Fa_bearing
@@ -228,7 +228,7 @@ L5_3 = (L10h*60*nout)/10^6;            % Bearing 5/6
 
 % Compensating for realibility
 L10_1 = L5_1/(askf);
-L10_2 = L5_2(askf);
+L10_2 = L5_2/(askf);
 L10_3 = L5_3/(askf);
 
 % Calculating dynamix bearing load
