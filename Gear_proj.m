@@ -28,15 +28,16 @@ a12 = m1;               % addendum top height
 a34 = m2;               % addendum top height
 b1 = m1*1.25;           % dedendum
 
-%Shaft
-ds1 = 25;%mm diameter shafts
-
+%% parameters Shaft/pressfit
+d_nom = 25; %mm nominal diameter shaft
 %Tolerance params 
-L_gear = 20;%mm width of gear sleave
-rn = 25; %Nominal/common radius of fitings
-ro = 40; %Outer diameter hub
-E = 215;% Mpa youngsmodulus plain carbon steel
+L_gear = 40;%mm width of gear sleave
+r_nom = 25/2; %Nominal/common radius of fitings
+E = 210*1e3;% Gpa to Mpa youngsmodulus plain carbon steel st355
 gamma = 0.3; %possions ratio for steel
+my_s = 0.2; %static coeff of friction
+sigma_y = 355; %Mpa st355 yield strength
+
 % Velocities
 nMiddle = nin/(n2/n1);
 
@@ -148,14 +149,87 @@ F_r_34 = F_t_34 * tand(20);
 % p_min3 = T_out / (my_s*pi*d*d/2*L_gear);
 
 %tolerance
-%Choosing a tolerance grade H7, h7 and IT7 as these tolerances give a snug fit.
+%Choosing a tolerance grade H7/s6 as these tolerances give a snug fit.
 %Later calculations will show if it is satisfactory in transmitting torque
-%with shaft diameter 25mm this gives us from table provided in mas412
-%25mm+0.025mm upper limit and lower limit 25mm+0.00mm
-%and it grade gives a tolerance of 
 
-F_t_34 = (T_shaft2*10^3)/r3;
-F_r_34 = F_t_34 * tand(alpha)
+%With nominal diameter=25mm and hole tolerance H7/s6 we get an upperlimit
+%of 25+0.025mm and lower limit 25+0.0mm
+%for the shaft tolerance we get upper limit 25+0.048mm and lower limit
+%25+0.035mm
+%same tolerance choosen for each shaft
+
+%interference delta
+delta_max = (d_nom+0.048)-(d_nom+0);
+delta_min = (d_nom+0.035)-(d_nom+0.021);
+
+%Shaft 1%
+
+r_o1 = r1;
+r_i1 = 0;
+
+%Surface pressure
+sp1_min = (0.5*delta_min)/( (r_nom/E) * ((r_o1^2+r_nom^2)/(r_o1^2-r_i1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i1^2)/(r_nom^2-r_i1^2))-gamma));
+%
+sp1_max = (0.5*delta_max)/( (r_nom/E) * ((r_o1^2+r_nom^2)/(r_o1^2-r_i1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i1^2)/(r_nom^2-r_i1^2))-gamma));
+
+%Transmitable torque
+Tt1_min = 2*pi*r_nom^2*sp1_min*L_gear*1e-3;
+
+Nslip1 = Tt1_min/T_in %safety factor against slip
+
+%Stresses/safety factor
+sigma_rs1 = -sp1_max;
+
+sigma_th1 = sp1_max*(r_o1^2+r_nom^2)/(r_o1^2-r_nom^2);
+
+sf1_r = sigma_y/sigma_rs1
+sf1_t = sigma_y/sigma_th1
+
+%Shaft 2%
+
+r_o2 = r2;
+r_i2 = 0;
+
+%Surface pressure
+sp2_min = (0.5*delta_min)/( (r_nom/E) * ((r_o2^2+r_nom^2)/(r_o2^2-r_i2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i2^2)/(r_nom^2-r_i2^2))-gamma));
+%
+sp2_max = (0.5*delta_max)/( (r_nom/E) * ((r_o2^2+r_nom^2)/(r_o2^2-r_i2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i2^2)/(r_nom^2-r_i2^2))-gamma));
+
+%Transmitable torque
+Tt2_min = 2*pi*r_nom^2*sp2_min*L_gear*1e-3;
+
+Nslip2 = Tt2_min/T_shaft2 %safety factor against slip
+
+%Stresses/safety factor
+sigma_rs2 = -sp2_max;
+
+sigma_th2 = sp2_max*(r_o2^2+r_nom^2)/(r_o2^2-r_nom^2);
+
+sf2_r = sigma_y/sigma_rs2
+sf2_t = sigma_y/sigma_th2
+
+%Shaft 3%
+
+r_o3 = r3;
+r_i3 = 0;
+
+%Surface pressure
+sp3_min = (0.5*delta_min)/( (r_nom/E) * ((r_o3^2+r_nom^2)/(r_o3^2-r_i3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i3^2)/(r_nom^2-r_i3^2))-gamma));
+%
+sp3_max = (0.5*delta_max)/( (r_nom/E) * ((r_o3^2+r_nom^2)/(r_o3^2-r_i3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i3^2)/(r_nom^2-r_i3^2))-gamma));
+
+%Transmitable torque
+Tt3_min = 2*pi*r_nom^2*sp3_min*L_gear*1e-3;
+
+Nslip3 = Tt3_min/T_out %safety factor against slip
+
+%Stresses/safety factor
+sigma_rs3 = -sp3_max;
+
+sigma_th3 = sp3_max*(r_o3^2+r_nom^2)/(r_o3^2-r_nom^2);
+
+sf3_r = sigma_y/sigma_rs3
+sf3_t = sigma_y/sigma_th3
 
 %% Bearing computations
 
