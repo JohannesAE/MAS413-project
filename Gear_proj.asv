@@ -32,13 +32,39 @@ b1 = m1*1.25;           % dedendum
 nMiddle = nin/(n2/n1);
 
 %% Parameteres bearings
-X0 = 1;                     % Radial Factor
-Y0 = 1;                     % Axial Factor
-X = 1;                      % Dynamic radial Factor
-Y = 1;                      % Dynamic Axial Factor
+
+X1 = 1;                      % Dynamic radial Factor
+X2 = 1;
+X3 = 1;
+X4 = 1;
+X5 = 1;
+X6 = 1;
+
+Y1 = 1;                      % Dynamic Axial Factor
+Y2 = 1; 
+Y3 = 1; 
+Y4 = 1;
+Y5 = 1;
+Y6 = 1;
+
+%Speed for the following bearings
+n_bearing12 = nin;
+n_bearing34 = nMiddle;
+n_bearing45 = nout;
+
 C = 1;                      % Dynamic load ratio[N]
-p = 3;                      % Exponent depending on the type of bearing ball=3, roller = 10/3
+pR = 10/3;                  % Exponent depending on the type of bearing ball=3, roller = 10/3
+pB = 3;                     % Exponent bearing
+
 L10h = oHours*days*year ;   % Operating hours 
+
+% Bearings
+Bearing1 = 1;               % Ball bearing 
+Bearing2 = 2;               % Ball bearing       
+Bearing3 = 3;               % Ball bearing
+Bearing4 = 4;               % Ball bearing 
+Bearing5 = 5;               % Radial load, roller bearing, cap.14.7.3
+Bearing6 = 6;               % Radial load, roller bearing
 
 %% Parameteres shaft
 d_shaft = 0.02;         % Diameter of the shaft
@@ -118,7 +144,7 @@ F_a_12 = F_t_12*tand(beta);
 
 % Spur gears n3 and n4
 F_t_34 = (T_shaft2*10^3)/r3;
-F_r_34 = F_t_34 * tand(20);
+F_r_34 = F_t_34 * tand(alpha)
 
 %% Bearing computations
 
@@ -132,20 +158,54 @@ F_r_34 = F_t_34 * tand(20);
     % Foreløpig: Tapered roller bearings
     %            Cylnindrical: Radial force dominent, and high
     %            Deep grove: radial, moderate axial, high speed, low noise
+% Forces to the bearings: 
+Fr_bearing1 = 1; 
+Fa_bearing1 = 1; 
+Fr_bearing2 = 1;
+Fa_bearing2 = 1; 
+Fr_bearing3 = 1; 
+Fa_bearing3 = 1;
+Fr_bearing4 = 1; 
+Fa_bearing4 = 1; 
+Fr_bearing5 = 1; 
+Fa_bearing5 = 1; 
+Fr_bearing6 = 1; 
+Fa_bearing6 = 1; 
 
-% Calculating static bearing load rpm < 10
-Po = X0*Fr_bearing + Y0*Fa_bearing ;     % Static bearing load
-So = C0/Po;                              % S0 = 0,4 (low) S0 = 4 (high)
+% Life requirements
+L10_1 = (L10h*60*nin)/10^6;             % Bearing 1/2
+L10_2 = (L10h*60*nMiddle)/10^6;         % Bearing 3/4
+L10_3 = (L10h*60*nout)/10^6;            % Bearing 5/6 
+
+% Compensating fo
 
 % Calculating dynamix bearing load
-P_bearing1 = X*Fr_bearing + Y*Fa_bearing;
-P_bearing2 = 0;
-P_bearing3 = 0;
+P_bearing1 = X1*Fr_bearing1 + Y1*Fa_bearing1;
+P_bearing2 = X2*Fr_bearing2 + Y2*Fa_bearing2;
+P_bearing3 = X3*Fr_bearing3 + Y3*Fa_bearing3;
+P_bearing4 = X4*Fr_bearing4 + Y4*Fa_bearing4;
+P_bearing5 = X5*Fr_bearing5 + Y5*Fa_bearing5;
+P_bearing6 = X6*Fr_bearing6 + Y6*Fa_bearing6;
 
-% Lifetime fo a bearing [24mnd FV]
-L10_1 = (L10h*60*nin)/10^6;             % Bearing 1/2
-L10_2 = (L10h*60*nMiddle)/10^6          % Bearing 3/4
-L10_3 = (L10h*60*nout)/10^6;            % Bearing 5/6                        
+% Calculate bearing life
+Creg1 = P_bearing1*(L10_1)^(1/3);       % Bearing 1
+Creg2 = P_bearing2*(L10_1)^(1/3);       % Bearing 2
+Creg3 = P_bearing3*(L10_2)^(1/3);       % Bearing 3
+Creg4 = P_bearing4*(L10_2)^(1/3);       % Bearing 4
+Creg5 = P_bearing5*(L10_3)^(1/3);       % Bearing 5
+Creg6 = P_bearing6*(L10_3)^(1/3);       % Bearing 6
+
+
+
+So = C0/Po;                              % S0 = 0,4 (low) S0 = 4 (high)
+
+% Calculation
+L = Lr(C/Fr)^pB         % C(rated capacity), Lr=life corresponding rated cap.(SKF)
+Creg = Fr(L/Lr)^0.3     % Fr = radial load, L = life required by application
+
+
+
+                     
 C1_bearing = P_bearing1*L10_1^(1/3);
 C2_bearing = P_bearing2*L10^(1/3);
 C3_bearing = P_bearing3*L10^(1/3);
