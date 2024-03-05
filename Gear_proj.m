@@ -159,22 +159,6 @@ F_r_34 = F_t_34 * tand(20);
 
 %% Press fit calculations
 
-%Press fit force
-% my_d = 0.90; %Dynamic friction coeff. verdier hentet fra power point
-% my_s = 0.10; %Static friction coeff
-% p = 0; %Surface pressure
-% d = 0; %Common diameter
-% 
-% F = my_d*p*d*L_gear*pi; %Press force
-% 
-% T_fit = my_s*p*pi*d*d/2*L_gear; %Torque transmitted from hub to shaft.
-% 
-% p_min1 = T_in/(my_s*pi*d*d/2*L_gear); %calculating min surface pressure
-% 
-% p_min2 = T_shaft2/(my_s*pi*d*d/2*L_gear);
-% 
-% p_min3 = T_out / (my_s*pi*d*d/2*L_gear);
-
 %tolerance
 %Choosing a tolerance grade H7/s6 as these tolerances give a snug fit.
 %Later calculations will show if it is satisfactory in transmitting torque
