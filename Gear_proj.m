@@ -77,6 +77,10 @@ Bearing4 = 4;               % Ball bearing
 Bearing5 = 5;               % Radial load, roller bearing, cap.14.7.3
 Bearing6 = 6;               % Radial load, roller bearing
 
+%Bearing dimensions 
+L_bearing = 30; %mm bearing witdh
+d_bearing = 50; %inner ring outer diameter (inner ring inner diameter same as nominal diameter)
+
 %% Parameteres shaft
 d_shaft = 0.02;         % Diameter of the shaft
 
@@ -241,6 +245,77 @@ sigma_th3 = sp3_max*(r_o3^2+r_nom^2)/(r_o3^2-r_nom^2);
 
 sf3_r = sigma_y/sigma_rs3
 sf3_t = sigma_y/sigma_th3
+
+%Press fit bearings
+%same tolerance as for the gears H7/s6
+
+    %Bearing 1 corresponding to shaft 1 same for bearing 2
+    r_bo1 = d_bearing/2; %Bearing
+    r_bi1 = 0;
+    
+    %Surface pressure
+    sp1_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma))
+    %
+    sp1_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma))
+    
+    %Transmitable torque
+    Tt1_b_min = 2*pi*r_nom^2*sp1_b_min*L_bearing*1e-3
+    
+    Nslip1_b = Tt1_b_min/T_in %safety factor against slip
+    
+    %Stresses/safety factor
+    sigma_b_rs1 = -sp1_b_max
+    
+    sigma_b_th1 = sp1_b_max*(r_bo1^2+r_nom^2)/(r_bo1^2-r_nom^2)
+    
+    sf1_b_r = sigma_y/sigma_b_rs1
+    sf1_b_t = sigma_y/sigma_b_th1
+
+        %Bearing 3 and 4 corresponding to shaft 2
+        r_bo2 = d_bearing/2; %Bearing
+        r_bi2 = 0;
+        
+        %Surface pressure
+        sp2_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma))
+        %
+        sp2_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma))
+        
+        %Transmitable torque
+        Tt2_b_min = 2*pi*r_nom^2*sp2_b_min*L_bearing*1e-3
+        
+        Nslip2_b = Tt2_b_min/T_shaft2 %safety factor against slip
+        
+        %Stresses/safety factor
+        sigma_b_rs2 = -sp2_b_max
+        
+        sigma_b_th2 = sp2_b_max*(r_bo2^2+r_nom^2)/(r_bo2^2-r_nom^2)
+        
+        sf2_b_r = sigma_y/sigma_b_rs2
+        sf2_b_t = sigma_y/sigma_b_th2
+            
+            %Bearing 5 and 6 corresponding to 
+            r_bo3 = d_bearing/2; %Bearing
+            r_bi3 = 0;
+            
+            %Surface pressure
+            sp3_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma))
+            %
+            sp3_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma))
+            
+            %Transmitable torque
+            Tt3_b_min = 2*pi*r_nom^2*sp3_b_min*L_bearing*1e-3
+            
+            Nslip3_b = Tt3_b_min/T_out %safety factor against slip
+            
+            %Stresses/safety factor
+            sigma_b_rs3 = -sp3_b_max
+            
+            sigma_b_th3 = sp3_b_max*(r_bo3^2+r_nom^2)/(r_bo3^2-r_nom^2)
+            
+            sf3_b_r = sigma_y/sigma_b_rs3
+            sf3_b_t = sigma_y/sigma_b_th3
+
+
 
 %% Bearing computations
 
