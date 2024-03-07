@@ -113,6 +113,21 @@ da4 = d4 + 2*(a34)                      % Spur gear 4
 C1 = (d1+d2)/2;                         % Center distance helical gear 
 C2 = (d3+d4)/2;                         % center distance spur gear
 
+
+%% inner gear box dimmensions
+%width
+%All shafts are 30cm long + 3cm bearing width. so a total width of the
+%gearbox is 33cm
+
+%Length
+% Gear 1 diameter 90mm + gear 2 365mm + gear 3 79mm + gear 4 352mm = 886mm
+
+%height
+% gear 2 largest gear diameter dictates heigth 365mm
+
+%Inner dimmensions are then [33x365x886][mm]
+
+
 %% Computations gear
 
 % Gear ratios
@@ -200,7 +215,7 @@ sigma_th1 = sp1_max*(r_o1^2+r_nom^2)/(r_o1^2-r_nom^2);
 sf1_r = sigma_y/sigma_rs1
 sf1_t = sigma_y/sigma_th1
 
-%Shaft 2%
+%Shaft 2 gear 2%
 
 r_o2 = r2;
 r_i2 = 0;
@@ -223,7 +238,7 @@ sigma_th2 = sp2_max*(r_o2^2+r_nom^2)/(r_o2^2-r_nom^2);
 sf2_r = sigma_y/sigma_rs2
 sf2_t = sigma_y/sigma_th2
 
-%Shaft 3%
+%Shaft 2 gear 3%
 
 r_o3 = r3;
 r_i3 = 0;
@@ -246,6 +261,29 @@ sigma_th3 = sp3_max*(r_o3^2+r_nom^2)/(r_o3^2-r_nom^2);
 sf3_r = sigma_y/sigma_rs3
 sf3_t = sigma_y/sigma_th3
 
+%Shaft 3%
+
+r_o4 = r4;
+r_i4 = 0;
+
+%Surface pressure
+sp4_min = (0.5*delta_min)/( (r_nom/E) * ((r_o4^2+r_nom^2)/(r_o4^2-r_i4^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i4^2)/(r_nom^2-r_i4^2))-gamma));
+%
+sp4_max = (0.5*delta_max)/( (r_nom/E) * ((r_o4^2+r_nom^2)/(r_o4^2-r_i4^2)+gamma) + (r_nom/E) * (((r_nom^2+r_i4^2)/(r_nom^2-r_i4^2))-gamma));
+
+%Transmitable torque
+Tt4_min = 2*pi*r_nom^2*sp4_min*L_gear*1e-3;
+
+Nslip4 = Tt4_min/T_out %safety factor against slip
+
+%Stresses/safety factor
+sigma_rs4 = -sp4_max;
+
+sigma_th4 = sp4_max*(r_o4^2+r_nom^2)/(r_o4^2-r_nom^2);
+
+sf4_r = sigma_y/sigma_rs4
+sf4_t = sigma_y/sigma_th4
+
 %Press fit bearings
 %same tolerance as for the gears H7/s6
 
@@ -254,19 +292,19 @@ sf3_t = sigma_y/sigma_th3
     r_bi1 = 0;
     
     %Surface pressure
-    sp1_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma))
+    sp1_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma));
     %
-    sp1_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma))
+    sp1_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo1^2+r_nom^2)/(r_bo1^2-r_bi1^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi1^2)/(r_nom^2-r_bi1^2))-gamma));
     
     %Transmitable torque
-    Tt1_b_min = 2*pi*r_nom^2*sp1_b_min*L_bearing*1e-3
+    Tt1_b_min = 2*pi*r_nom^2*sp1_b_min*L_bearing*1e-3;
     
     Nslip1_b = Tt1_b_min/T_in %safety factor against slip
     
     %Stresses/safety factor
-    sigma_b_rs1 = -sp1_b_max
+    sigma_b_rs1 = -sp1_b_max;
     
-    sigma_b_th1 = sp1_b_max*(r_bo1^2+r_nom^2)/(r_bo1^2-r_nom^2)
+    sigma_b_th1 = sp1_b_max*(r_bo1^2+r_nom^2)/(r_bo1^2-r_nom^2);
     
     sf1_b_r = sigma_y/sigma_b_rs1
     sf1_b_t = sigma_y/sigma_b_th1
@@ -276,19 +314,19 @@ sf3_t = sigma_y/sigma_th3
         r_bi2 = 0;
         
         %Surface pressure
-        sp2_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma))
+        sp2_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma));
         %
-        sp2_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma))
+        sp2_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo2^2+r_nom^2)/(r_bo2^2-r_bi2^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi2^2)/(r_nom^2-r_bi2^2))-gamma));
         
         %Transmitable torque
-        Tt2_b_min = 2*pi*r_nom^2*sp2_b_min*L_bearing*1e-3
+        Tt2_b_min = 2*pi*r_nom^2*sp2_b_min*L_bearing*1e-3;
         
         Nslip2_b = Tt2_b_min/T_shaft2 %safety factor against slip
         
         %Stresses/safety factor
-        sigma_b_rs2 = -sp2_b_max
+        sigma_b_rs2 = -sp2_b_max;
         
-        sigma_b_th2 = sp2_b_max*(r_bo2^2+r_nom^2)/(r_bo2^2-r_nom^2)
+        sigma_b_th2 = sp2_b_max*(r_bo2^2+r_nom^2)/(r_bo2^2-r_nom^2);
         
         sf2_b_r = sigma_y/sigma_b_rs2
         sf2_b_t = sigma_y/sigma_b_th2
@@ -298,19 +336,19 @@ sf3_t = sigma_y/sigma_th3
             r_bi3 = 0;
             
             %Surface pressure
-            sp3_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma))
+            sp3_b_min = (0.5*delta_min)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma));
             %
-            sp3_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma))
+            sp3_b_max = (0.5*delta_max)/( (r_nom/E) * ((r_bo3^2+r_nom^2)/(r_bo3^2-r_bi3^2)+gamma) + (r_nom/E) * (((r_nom^2+r_bi3^2)/(r_nom^2-r_bi3^2))-gamma));
             
             %Transmitable torque
-            Tt3_b_min = 2*pi*r_nom^2*sp3_b_min*L_bearing*1e-3
+            Tt3_b_min = 2*pi*r_nom^2*sp3_b_min*L_bearing*1e-3;
             
             Nslip3_b = Tt3_b_min/T_out %safety factor against slip
             
             %Stresses/safety factor
-            sigma_b_rs3 = -sp3_b_max
+            sigma_b_rs3 = -sp3_b_max;
             
-            sigma_b_th3 = sp3_b_max*(r_bo3^2+r_nom^2)/(r_bo3^2-r_nom^2)
+            sigma_b_th3 = sp3_b_max*(r_bo3^2+r_nom^2)/(r_bo3^2-r_nom^2);
             
             sf3_b_r = sigma_y/sigma_b_rs3
             sf3_b_t = sigma_y/sigma_b_th3
