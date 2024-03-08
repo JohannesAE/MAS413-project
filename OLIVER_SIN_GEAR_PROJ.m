@@ -100,7 +100,7 @@ A_y_xy = F_r_12-B_y_xy;
 
 
 x1 = 0 : 0.01 : 0.1;
-x11 = 0.05 : 0.01 : 0.3;
+x11 = 0.1 : 0.01 : 0.3;
 %Shaft 1 (XZ PLANE)
 p111XZ = F_a_12*ones(size(x1));
 V111XZ = -A_y_xz*ones(size(x1));
@@ -126,29 +126,29 @@ end
 %%%%%%%%%%%%%%% Shaft 2 %%%%%%%%%%%%%
 for i = 0
 Cx_xz = F_a_12;
-Dz = (F_t_34*0.15 -(F_t_12*0.05))/0.2;
+Dz = (F_t_34*0.2 -(F_t_12*0.1))/0.3;
 Cz = F_t_12 - F_t_34 + Dz;
 
 %Region 1 xz plane
-x21 = 0: 0.01 : 0.05;
+x21 = 0: 0.01 : 0.1;
 Px_xz_21 = Cx_xz * ones(size(x21));
 Vx_xz_21 = Cz * ones(size(x21));
 Mx_xz_21 = Cz*x21;
 %Region 2 xz plane
-x22 = 0.05 : 0.01 : 0.15;
+x22 = 0.1 : 0.01 : 0.2;
 Px_xz_22 = (Cx_xz - F_a_12)*ones(size(x22));
 Vx_xz_22 = (Cz-F_t_12)*ones(size(x22));
-Mx_xz_22 = Cz*x22 - (F_t_12*(x22-0.05));
+Mx_xz_22 = Cz*x22 - (F_t_12*(x22-0.1));
 %Region 3 xz plane
-x23 = 0.15 : 0.01 : 0.2;
+x23 = 0.2 : 0.01 : 0.3;
 Px_xz_23 = (Cx_xz - F_a_12)*ones(size(x23));
 Vx_xz_23 = (-F_t_12 + F_t_34 + Cz)* ones(size(x23));
-Mx_xz_23 = F_t_34*(x23-0.15) - F_t_12*(x23-0.05) + Cz*(x23);
+Mx_xz_23 = F_t_34*(x23-0.2) - F_t_12*(x23-0.1) + Cz*(x23);
 
 
 %%% SHAFT 2 XY PLANE %%%
 Cx_xy = F_a_12;
-Dy = (-(F_a_12*0.182) - (F_r_12*0.05) + (F_r_34 * 0.15))/0.2;
+Dy = (-(F_a_12*0.182) - (F_r_12*0.1) + (F_r_34 * 0.2))/0.3;
 Cy = F_r_12 + F_r_34 -Dy;
 %Region 1
 Px_xy_21 = -Cx_xy*ones(size(x21));
@@ -157,11 +157,11 @@ Mx_xy_21 = -Cy*x21;
 %Region 2 
 Px_xy_22 = (Cx_xy - F_a_12)*ones(size(x22));
 Vx_xy_22 = (F_r_12-Cy)*ones(size(x22));
-Mx_xy_22 = -(F_a_12*0.182) + (F_r_12*(x22-0.05)) - (Cy*(x22));
+Mx_xy_22 = -(F_a_12*0.182) + (F_r_12*(x22-0.1)) - (Cy*(x22));
 %Region 3
 Px_xy_23 = (Cx_xy - F_a_12)*ones(size(x23));
 Vx_xy_23  = (F_r_12-F_r_34 - Cy)*ones(size(x23));
-Mx_xy_23 = (F_r_12*(x23-0.05)) - (F_a_12*0.182) -(Cy*x23) - (F_r_34*(x23-0.25));
+Mx_xy_23 = (F_r_12*(x23-0.1)) - (F_a_12*0.182) -(Cy*x23) - (F_r_34*(x23-0.2));
 end
 
 
@@ -178,10 +178,10 @@ Px_xz_31 = zeros(size(x31));
 Vx_xz_31 = Ez * ones(size(x31));
 Mx_xz_31 = Ez*x31;
 % Region 2 
-x32 = 0.15:0.01:0.3;
+x32 = 0.2:0.01:0.3;
 Px_xz_32 = zeros(size(x32));
 Vx_xz_32 = (Ez-F_t_34)*ones(size(x32));
-Mx_xz_32 = Ez*x32 - (F_t_34*(x32-0.15));
+Mx_xz_32 = Ez*x32 - (F_t_34*(x32-0.2));
 
 % XY PLANE
 Fy = (F_r_34*0.2)/0.3;
@@ -199,7 +199,7 @@ end
 
 
 %%%%%%% PLOTS %%%%%%%%%%%%%%
-%{
+
 for i = 0;
 % SHAFT 1 
 for i = 0;
@@ -221,7 +221,7 @@ plot(x1, M111XZ)
 hold on
 plot(x11,M112XZ)
 grid on
-ylim([-60 5])
+
 
 
 %%XY PLANE
@@ -236,14 +236,14 @@ subplot(3,1,2)
 plot(x1,V111XY)
 hold on
 plot(x11,V112XY)
-ylim([-300 350])
+
 grid on
 subplot(3,1,3)
 plot(x1, M111XY)
 hold on
 plot(x11,M112XY)
 grid on
-ylim([-25 25])
+
 end
 % SHAFT 2 
 for i = 0;
@@ -356,10 +356,10 @@ figure
 plot(x21,zeros(size(x21)))
 title('Torque shaft 2 Nm')
 hold on
+grid on
 plot(x22, T_diff*ones(size(x22)))
 plot(x23,zeros(size(x23)))
 
-%}
 
 % Bearing loads for shaft 1
 A_load = sqrt(A_y_xy^2 + A_y_xz^2)
@@ -368,9 +368,4 @@ C_load = sqrt(Cy^2+Cz^2)
 D_load = sqrt(Dy^2 + Dz^2)
 E_load = sqrt(Ey^2 + Ez^2)
 F_load = sqrt(Fy^2 + Fz^2)
-
-M_shaft1 = sqrt(max(M112XY)^2 + max(M111XZ)^2)
-M_shaft2 = sqrt(max(Mx_xy_22)^2 + max(Mx_xz_22)^2)
-M_shaft3 = sqrt(max(Mx_xy_32)^2 + max(Mx_xz_32)^2)
-
 
